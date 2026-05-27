@@ -1,6 +1,6 @@
 // EvolveTogether Budget Tracker
 
-const TOTAL_BUDGET = 500_000;
+const TOTAL_BUDGET = 10_000;
 const CATS = {
   a8_paid: 'A8 Paid Influencers',
 };
