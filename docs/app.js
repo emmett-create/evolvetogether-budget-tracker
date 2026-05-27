@@ -271,8 +271,8 @@ function bindAll() {
     const btn    = document.getElementById('btn-submit');
     const isEdit = !!editId;
     btn.disabled = true; btn.textContent = 'Saving…';
-    const cat  = document.getElementById('f-category').value;
-    const paid = cat === 'a8_paid';
+    const cat  = 'a8_paid';
+    const paid = true;
     const payload = {
       date:           document.getElementById('f-date').value,
       entry_type:     document.getElementById('f-type').value,
@@ -289,10 +289,6 @@ function bindAll() {
     await load();
   });
 
-  document.getElementById('f-category').addEventListener('change', e => {
-    const show = ['a8_paid','evolvetogether_paid'].includes(e.target.value);
-    document.getElementById('field-handle').classList.toggle('hidden', !show);
-  });
 
   document.getElementById('convert-close').addEventListener('click',  () => { convertId = null; document.getElementById('convert-overlay').classList.add('hidden'); });
   document.getElementById('convert-cancel').addEventListener('click', () => { convertId = null; document.getElementById('convert-overlay').classList.add('hidden'); });
