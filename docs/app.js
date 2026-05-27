@@ -2,9 +2,7 @@
 
 const TOTAL_BUDGET = 500_000;
 const CATS = {
-  a8_paid:             'A8 Paid Influencers',
-  evolvetogether_paid: 'EvolveTogether Paid Influencers',
-  shipping:            'Shipping & PR Mailers',
+  a8_paid: 'A8 Paid Influencers',
 };
 
 const API = `${SUPABASE_URL}/rest/v1/evolvetogether_budget_entries`;
@@ -274,7 +272,7 @@ function bindAll() {
     const isEdit = !!editId;
     btn.disabled = true; btn.textContent = 'Saving…';
     const cat  = document.getElementById('f-category').value;
-    const paid = ['a8_paid','evolvetogether_paid'].includes(cat);
+    const paid = cat === 'a8_paid';
     const payload = {
       date:           document.getElementById('f-date').value,
       entry_type:     document.getElementById('f-type').value,
@@ -441,7 +439,7 @@ function openEditModal(entry) {
   document.getElementById('f-description').value = entry.description || '';
   document.getElementById('f-amount').value      = entry.amount;
   document.getElementById('f-notes').value       = entry.notes || '';
-  const showHandle = ['a8_paid','evolvetogether_paid'].includes(entry.category);
+  const showHandle = entry.category === 'a8_paid';
   document.getElementById('field-handle').classList.toggle('hidden', !showHandle);
   document.getElementById('modal-overlay').classList.remove('hidden');
 }

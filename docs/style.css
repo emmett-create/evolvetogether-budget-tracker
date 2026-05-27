@@ -68,6 +68,7 @@ body {
   gap: 14px; margin-bottom: 20px;
 }
 @media (max-width: 680px) { .cat-grid { grid-template-columns: 1fr; } }
+.cat-grid-1 { grid-template-columns: 1fr; max-width: 360px; }
 
 .cat-card {
   background: #161b22; border: 1px solid #30363d;
