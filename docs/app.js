@@ -281,7 +281,7 @@ function bindAll() {
       date:           document.getElementById('f-date').value,
       entry_type:     document.getElementById('f-type').value,
       category:       document.getElementById('f-category').value,
-      creator_handle: paid ? (document.getElementById('f-handle').value.trim().replace(/^@/,'') || null) : null,
+      creator_handle: document.getElementById('f-handle').value.trim().replace(/^@/,'') || null,
       description:    document.getElementById('f-description').value.trim() || null,
       amount:         parseFloat(document.getElementById('f-amount').value),
       notes:          document.getElementById('f-notes').value.trim() || null,
