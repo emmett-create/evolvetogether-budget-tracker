@@ -83,9 +83,16 @@ body {
   outline: 2px solid #58a6ff;
   outline-offset: -1px;
 }
-.cat-card.a8   { border-left-color: #a78bfa; }
-.cat-card.mg   { border-left-color: #60a5fa; }
-.cat-card.ship { border-left-color: #fb923c; }
+.cat-card.a8            { border-left-color: #a78bfa; }
+.cat-card.mg            { border-left-color: #60a5fa; }
+.cat-card.ship          { border-left-color: #fb923c; }
+.cat-card.deo_ugc       { border-left-color: #f59e0b; }
+.cat-card.hand_wash_ugc { border-left-color: #f472b6; }
+.cat-card.duo_ugc       { border-left-color: #c084fc; }
+.cat-card.duo_dtc       { border-left-color: #2dd4bf; }
+.cat-grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .cat-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+.cc-budget { font-size: 12px; color: #8b949e; margin-bottom: 8px; }
 
 .cc-label {
   font-size: 11px; text-transform: uppercase;
@@ -202,6 +209,10 @@ body {
 .badge-cat.a8_paid             { background: #2d1f5e; color: #a78bfa; }
 .badge-cat.evolvetogether_paid { background: #0f2044; color: #60a5fa; }
 .badge-cat.shipping            { background: #2d1f0f; color: #fb923c; }
+.badge-cat.deo_ugc             { background: #2d1f00; color: #f59e0b; }
+.badge-cat.hand_wash_ugc       { background: #2d0f1e; color: #f472b6; }
+.badge-cat.duo_ugc             { background: #1e0f2d; color: #c084fc; }
+.badge-cat.duo_dtc             { background: #0f2d2a; color: #2dd4bf; }
 
 .handle-text { font-family: monospace; font-size: 11px; color: #8b949e; margin-right: 4px; }
 .amount-actual  { font-weight: 600; }
@@ -244,12 +255,11 @@ body {
 .cc-bar-wrap {
   height: 4px; background: #21262d;
   border-radius: 2px; overflow: hidden;
-  margin: 8px 0 6px;
+  margin: 8px 0 6px; display: flex;
 }
-.cc-bar-fill {
-  height: 100%; background: #3fb950;
-  border-radius: 2px; transition: width 0.5s ease;
-}
+.cc-bar-fill { height: 100%; transition: width 0.5s ease; }
+.cc-bar-fill.actual  { background: #3fb950; }
+.cc-bar-fill.planned { background: #58a6ff; }
 
 /* ── Calendar ── */
 .cal-nav-row {
@@ -301,6 +311,10 @@ body {
 .cal-dot.a8_paid             { background: #2d1f5e; color: #a78bfa; }
 .cal-dot.evolvetogether_paid { background: #0f2044; color: #60a5fa; }
 .cal-dot.shipping            { background: #2d1f0f; color: #fb923c; }
+.cal-dot.deo_ugc             { background: #2d1f00; color: #f59e0b; }
+.cal-dot.hand_wash_ugc       { background: #2d0f1e; color: #f472b6; }
+.cal-dot.duo_ugc             { background: #1e0f2d; color: #c084fc; }
+.cal-dot.duo_dtc             { background: #0f2d2a; color: #2dd4bf; }
 .cal-dot.cal-dot-plan  { opacity: 0.55; }
 
 .cal-detail {

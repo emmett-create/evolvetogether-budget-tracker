@@ -26,9 +26,9 @@
       <div class="budget-top">
         <div>
           <span class="budget-num" id="total-spent">$0</span>
-          <span class="budget-of">spent of $10,000</span>
+          <span class="budget-of">spent of $50,000</span>
         </div>
-        <span class="budget-rem" id="total-remaining">$10,000 remaining</span>
+        <span class="budget-rem" id="total-remaining">$50,000 remaining</span>
       </div>
       <div class="progress-track">
         <div class="progress-fill actual" id="progress-actual" style="width:0%"></div>
@@ -40,13 +40,50 @@
       </div>
     </div>
 
-    <!-- Category cards -->
-    <div class="cat-grid cat-grid-1">
-      <div class="cat-card a8" id="cc-a8_paid" data-cat="a8_paid">
-        <div class="cc-label">A8 Paid Influencers</div>
-        <div class="cc-num"   id="cat-a8_paid-actual">$0</div>
-        <div class="cc-bar-wrap"><div class="cc-bar-fill" id="cat-a8_paid-bar" style="width:0%"></div></div>
-        <div class="cc-plan"  id="cat-a8_paid-planned"></div>
+    <!-- Campaign cards -->
+    <div class="cat-grid cat-grid-4">
+      <div class="cat-card deo_ugc" id="cc-deo_ugc" data-cat="deo_ugc">
+        <div class="cc-label">Deo UGC</div>
+        <div class="cc-num" id="cat-deo_ugc-actual">$0</div>
+        <div class="cc-budget">of $20,000</div>
+        <div class="cc-bar-wrap">
+          <div class="cc-bar-fill actual"  id="cat-deo_ugc-actual-bar"  style="width:0%"></div>
+          <div class="cc-bar-fill planned" id="cat-deo_ugc-planned-bar" style="width:0%"></div>
+        </div>
+        <div class="cc-plan" id="cat-deo_ugc-planned"></div>
+        <div class="cc-hint">Click to filter</div>
+      </div>
+      <div class="cat-card hand_wash_ugc" id="cc-hand_wash_ugc" data-cat="hand_wash_ugc">
+        <div class="cc-label">Hand Wash UGC</div>
+        <div class="cc-num" id="cat-hand_wash_ugc-actual">$0</div>
+        <div class="cc-budget">of $10,000</div>
+        <div class="cc-bar-wrap">
+          <div class="cc-bar-fill actual"  id="cat-hand_wash_ugc-actual-bar"  style="width:0%"></div>
+          <div class="cc-bar-fill planned" id="cat-hand_wash_ugc-planned-bar" style="width:0%"></div>
+        </div>
+        <div class="cc-plan" id="cat-hand_wash_ugc-planned"></div>
+        <div class="cc-hint">Click to filter</div>
+      </div>
+      <div class="cat-card duo_ugc" id="cc-duo_ugc" data-cat="duo_ugc">
+        <div class="cc-label">Duo UGC</div>
+        <div class="cc-num" id="cat-duo_ugc-actual">$0</div>
+        <div class="cc-budget">of $10,000</div>
+        <div class="cc-bar-wrap">
+          <div class="cc-bar-fill actual"  id="cat-duo_ugc-actual-bar"  style="width:0%"></div>
+          <div class="cc-bar-fill planned" id="cat-duo_ugc-planned-bar" style="width:0%"></div>
+        </div>
+        <div class="cc-plan" id="cat-duo_ugc-planned"></div>
+        <div class="cc-hint">Click to filter</div>
+      </div>
+      <div class="cat-card duo_dtc" id="cc-duo_dtc" data-cat="duo_dtc">
+        <div class="cc-label">Duo DTC</div>
+        <div class="cc-num" id="cat-duo_dtc-actual">$0</div>
+        <div class="cc-budget">of $10,000</div>
+        <div class="cc-bar-wrap">
+          <div class="cc-bar-fill actual"  id="cat-duo_dtc-actual-bar"  style="width:0%"></div>
+          <div class="cc-bar-fill planned" id="cat-duo_dtc-planned-bar" style="width:0%"></div>
+        </div>
+        <div class="cc-plan" id="cat-duo_dtc-planned"></div>
         <div class="cc-hint">Click to filter</div>
       </div>
     </div>
@@ -101,7 +138,10 @@
         <button class="cal-btn" id="cal-next">Next →</button>
       </div>
       <div class="cal-key">
-        <span class="cal-dot a8_paid">A8 Paid Influencers</span>
+        <span class="cal-dot deo_ugc">Deo UGC</span>
+        <span class="cal-dot hand_wash_ugc">Hand Wash UGC</span>
+        <span class="cal-dot duo_ugc">Duo UGC</span>
+        <span class="cal-dot duo_dtc">Duo DTC</span>
         <span class="cal-key-dim">Dimmed = planned only</span>
       </div>
       <div class="cal-dow-row">
@@ -146,10 +186,13 @@
             </select>
           </div>
         </div>
-        <div class="fld hidden">
-          <label>Category</label>
-          <select id="f-category">
-            <option value="a8_paid" selected>A8 Paid Influencers</option>
+        <div class="fld">
+          <label>Campaign</label>
+          <select id="f-category" required>
+            <option value="deo_ugc">Deo UGC</option>
+            <option value="hand_wash_ugc">Hand Wash UGC</option>
+            <option value="duo_ugc">Duo UGC</option>
+            <option value="duo_dtc">Duo DTC</option>
           </select>
         </div>
         <div class="fld" id="field-handle">

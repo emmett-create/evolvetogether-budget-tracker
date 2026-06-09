@@ -1,9 +1,13 @@
 // EvolveTogether Budget Tracker
 
-const TOTAL_BUDGET = 10_000;
-const CATS = {
-  a8_paid: 'A8 Paid Influencers',
+const TOTAL_BUDGET = 50_000;
+const CAMPAIGNS = {
+  deo_ugc:       { label: 'Deo UGC',       budget: 20_000 },
+  hand_wash_ugc: { label: 'Hand Wash UGC', budget: 10_000 },
+  duo_ugc:       { label: 'Duo UGC',       budget: 10_000 },
+  duo_dtc:       { label: 'Duo DTC',       budget: 10_000 },
 };
+const CATS = Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, v]) => [k, v.label]));
 
 const API = `${SUPABASE_URL}/rest/v1/evolvetogether_budget_entries`;
 const SB  = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -77,13 +81,15 @@ function renderSummary() {
   setStyle('progress-actual',  'width', aPct + '%');
   setStyle('progress-planned', 'width', pPct + '%');
 
-  for (const cat of Object.keys(CATS)) {
+  for (const [cat, camp] of Object.entries(CAMPAIGNS)) {
     const ca = sum(rows.filter(r => r.category === cat && r.entry_type === 'actual'));
     const cp = sum(rows.filter(r => r.category === cat && r.entry_type === 'planned'));
     setText(`cat-${cat}-actual`,  fmt(ca));
     setText(`cat-${cat}-planned`, cp > 0 ? '+ ' + fmt(cp) + ' planned' : '');
-    const pct = (ca + cp) > 0 ? Math.round(ca / (ca + cp) * 100) : 0;
-    setStyle(`cat-${cat}-bar`, 'width', pct + '%');
+    const aPct = Math.min(ca / camp.budget * 100, 100);
+    const pPct = Math.min(cp / camp.budget * 100, 100 - aPct);
+    setStyle(`cat-${cat}-actual-bar`,  'width', aPct + '%');
+    setStyle(`cat-${cat}-planned-bar`, 'width', pPct + '%');
   }
 }
 
@@ -271,12 +277,10 @@ function bindAll() {
     const btn    = document.getElementById('btn-submit');
     const isEdit = !!editId;
     btn.disabled = true; btn.textContent = 'Saving…';
-    const cat  = 'a8_paid';
-    const paid = true;
     const payload = {
       date:           document.getElementById('f-date').value,
       entry_type:     document.getElementById('f-type').value,
-      category:       cat,
+      category:       document.getElementById('f-category').value,
       creator_handle: paid ? (document.getElementById('f-handle').value.trim().replace(/^@/,'') || null) : null,
       description:    document.getElementById('f-description').value.trim() || null,
       amount:         parseFloat(document.getElementById('f-amount').value),
@@ -435,8 +439,7 @@ function openEditModal(entry) {
   document.getElementById('f-description').value = entry.description || '';
   document.getElementById('f-amount').value      = entry.amount;
   document.getElementById('f-notes').value       = entry.notes || '';
-  const showHandle = entry.category === 'a8_paid';
-  document.getElementById('field-handle').classList.toggle('hidden', !showHandle);
+  document.getElementById('field-handle').classList.remove('hidden');
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
 function quickConvert(id) {
