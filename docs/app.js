@@ -6,6 +6,7 @@ const CAMPAIGNS = {
   hand_wash_ugc: { label: 'Hand Wash UGC', budget: 10_000 },
   duo_ugc:       { label: 'Duo UGC',       budget: 10_000 },
   duo_dtc:       { label: 'Duo DTC',       budget: 10_000 },
+  additional_paid: { label: 'Additional Budget/Brand Paid', budget: null }, // no cap, brand-paid, ongoing
 };
 const CATS = Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, v]) => [k, v.label]));
 
@@ -68,10 +69,10 @@ function render() {
 }
 
 function renderSummary() {
-  const act  = rows.filter(r => r.entry_type === 'actual');
-  const plan = rows.filter(r => r.entry_type === 'planned');
-  const tAct  = sum(act);
-  const tPlan = sum(plan);
+  // "Additional Budget/Brand Paid" is brand-paid and uncapped — keep it OUT of the $50k program total.
+  const inProgram = r => r.category !== 'additional_paid';
+  const tAct  = sum(rows.filter(r => r.entry_type === 'actual'  && inProgram(r)));
+  const tPlan = sum(rows.filter(r => r.entry_type === 'planned' && inProgram(r)));
 
   setText('total-spent',     fmt(tAct));
   setText('total-remaining', fmt(TOTAL_BUDGET - tAct) + ' remaining');
@@ -86,10 +87,11 @@ function renderSummary() {
     const cp = sum(rows.filter(r => r.category === cat && r.entry_type === 'planned'));
     setText(`cat-${cat}-actual`,  fmt(ca));
     setText(`cat-${cat}-planned`, cp > 0 ? '+ ' + fmt(cp) + ' planned' : '');
-    const aPct = Math.min(ca / camp.budget * 100, 100);
-    const pPct = Math.min(cp / camp.budget * 100, 100 - aPct);
-    setStyle(`cat-${cat}-actual-bar`,  'width', aPct + '%');
-    setStyle(`cat-${cat}-planned-bar`, 'width', pPct + '%');
+    if (camp.budget == null) continue;  // no-budget pool: no progress bars
+    const caPct = Math.min(ca / camp.budget * 100, 100);
+    const cpPct = Math.min(cp / camp.budget * 100, 100 - caPct);
+    setStyle(`cat-${cat}-actual-bar`,  'width', caPct + '%');
+    setStyle(`cat-${cat}-planned-bar`, 'width', cpPct + '%');
   }
 }
 
