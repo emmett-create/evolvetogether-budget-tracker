@@ -81,6 +81,9 @@ function renderSummary() {
   const pPct = Math.min(tPlan / TOTAL_BUDGET * 100, 100 - aPct);
   setStyle('progress-actual',  'width', aPct + '%');
   setStyle('progress-planned', 'width', pPct + '%');
+  const ppEl = document.getElementById('progress-planned');
+  if (ppEl) ppEl.dataset.tooltip = tPlan > 0 ? fmt(tPlan) + ' planned' : '';
+  setText('legend-planned-amt', tPlan > 0 ? '(' + fmt(tPlan) + ')' : '');
 
   for (const [cat, camp] of Object.entries(CAMPAIGNS)) {
     const ca = sum(rows.filter(r => r.category === cat && r.entry_type === 'actual'));
