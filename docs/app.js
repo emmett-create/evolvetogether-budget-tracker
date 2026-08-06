@@ -1,11 +1,12 @@
 // EvolveTogether Budget Tracker
 
-const TOTAL_BUDGET = 50_000;
+const TOTAL_BUDGET = 76_700;
 const CAMPAIGNS = {
   deo_ugc:       { label: 'Deo UGC',       budget: 20_000 },
   hand_wash_ugc: { label: 'Hand Wash UGC', budget: 10_000 },
   duo_ugc:       { label: 'Duo UGC',       budget: 10_000 },
   duo_dtc:       { label: 'Duo DTC',       budget: 10_000 },
+  august_dtc:    { label: 'August DTC',    budget: 26_700 },
   additional_paid: { label: 'Additional Budget/Brand Paid', budget: null }, // no cap, brand-paid, ongoing
 };
 const CATS = Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, v]) => [k, v.label]));

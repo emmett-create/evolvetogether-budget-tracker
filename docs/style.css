@@ -90,6 +90,7 @@ body {
 .cat-card.hand_wash_ugc { border-left-color: #f472b6; }
 .cat-card.duo_ugc       { border-left-color: #c084fc; }
 .cat-card.duo_dtc       { border-left-color: #2dd4bf; }
+.cat-card.august_dtc    { border-left-color: #4ade80; }
 .cat-card.additional_paid { border-left-color: #94a3b8; }
 #cc-additional_paid { grid-column: 1 / -1; }  /* full-width: separate, uncapped pool */
 .cat-grid-4 { grid-template-columns: repeat(4, 1fr); }
@@ -215,6 +216,7 @@ body {
 .badge-cat.hand_wash_ugc       { background: #2d0f1e; color: #f472b6; }
 .badge-cat.duo_ugc             { background: #1e0f2d; color: #c084fc; }
 .badge-cat.duo_dtc             { background: #0f2d2a; color: #2dd4bf; }
+.badge-cat.august_dtc          { background: #14301f; color: #4ade80; }
 .badge-cat.additional_paid     { background: #1e293b; color: #94a3b8; }
 
 .handle-text { font-family: monospace; font-size: 11px; color: #8b949e; margin-right: 4px; }
@@ -318,6 +320,7 @@ body {
 .cal-dot.hand_wash_ugc       { background: #2d0f1e; color: #f472b6; }
 .cal-dot.duo_ugc             { background: #1e0f2d; color: #c084fc; }
 .cal-dot.duo_dtc             { background: #0f2d2a; color: #2dd4bf; }
+.cal-dot.august_dtc          { background: #14301f; color: #4ade80; }
 .cal-dot.additional_paid     { background: #1e293b; color: #94a3b8; }
 .cal-dot.cal-dot-plan  { opacity: 0.55; }
 
