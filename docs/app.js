@@ -1,6 +1,6 @@
 // EvolveTogether Budget Tracker
 
-const TOTAL_BUDGET = 103_400;
+const TOTAL_BUDGET = 140_290;
 const CAMPAIGNS = {
   deo_ugc:       { label: 'Deo UGC',       budget: 20_000 },
   hand_wash_ugc: { label: 'Hand Wash UGC', budget: 10_000 },
@@ -8,6 +8,12 @@ const CAMPAIGNS = {
   duo_dtc:       { label: 'Duo DTC',       budget: 10_000 },
   august_dtc:    { label: 'August DTC',    budget: 26_700 },
   september_dtc: { label: 'September DTC', budget: 26_700 },
+  // New monthly plan from Jillian Greenspan, effective 10/1/2026 (Slack,
+  // 2026-09-30) — replaces the old per-deliverable campaign breakdown
+  // going forward with two straight monthly buckets, Paid Influencer and
+  // TikTok Shop, same $36,890/month total she gave.
+  october_paid_influencer: { label: 'October Paid Influencer', budget: 22_325 },
+  october_tt_shop:         { label: 'October TikTok Shop',     budget: 14_565 },
   additional_paid: { label: 'Additional Budget/Brand Paid', budget: null }, // no cap, brand-paid, ongoing
 };
 const CATS = Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, v]) => [k, v.label]));
