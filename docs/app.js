@@ -1,6 +1,6 @@
 // EvolveTogether Budget Tracker
 
-const TOTAL_BUDGET = 140_290;
+const TOTAL_BUDGET = 184_940;
 const CAMPAIGNS = {
   deo_ugc:       { label: 'Deo UGC',       budget: 20_000 },
   hand_wash_ugc: { label: 'Hand Wash UGC', budget: 10_000 },
@@ -12,7 +12,13 @@ const CAMPAIGNS = {
   // 2026-09-30) — replaces the old per-deliverable campaign breakdown
   // going forward with two straight monthly buckets, Paid Influencer and
   // TikTok Shop, same $36,890/month total she gave.
-  october_paid_influencer: { label: 'October Paid Influencer', budget: 22_325 },
+  // Paid Influencer rolls over month to month (Olivia, 2026-11-25) — order
+  // here IS the rollover chain order, same mechanism as Stardust's
+  // Oct/Nov/Dec. To add another month: copy a `..._paid_influencer` line,
+  // rename it, keep `rollover: true`, and it chains after the one above it.
+  october_paid_influencer:  { label: 'October Paid Influencer',  budget: 22_325, rollover: true },
+  november_paid_influencer: { label: 'November Paid Influencer', budget: 22_325, rollover: true },
+  december_paid_influencer: { label: 'December Paid Influencer', budget: 22_325, rollover: true },
   october_tt_shop:         { label: 'October TikTok Shop',     budget: 14_565 },
   additional_paid: { label: 'Additional Budget/Brand Paid', budget: null }, // no cap, brand-paid, ongoing
 };
@@ -190,14 +196,31 @@ function renderSummary() {
   if (ppEl) ppEl.dataset.tooltip = tPlan > 0 ? fmt(tPlan) + ' planned' : '';
   setText('legend-planned-amt', tPlan > 0 ? '(' + fmt(tPlan) + ')' : '');
 
+  // Rollover: walking CAMPAIGNS in order, a `rollover: true` campaign's
+  // effective budget is its own base budget plus whatever was left unspent
+  // by the previous rollover campaign in the chain. Any non-rollover
+  // campaign (or the null-budget pool) resets the carry to 0 first, so it
+  // never leaks into an unrelated campaign. Shifts allocation between
+  // months only — doesn't change TOTAL_BUDGET.
+  let carry = 0;
   for (const [cat, camp] of Object.entries(CAMPAIGNS)) {
     const ca = sum(rows.filter(r => r.category === cat && r.entry_type === 'actual'));
     const cp = sum(rows.filter(r => r.category === cat && r.entry_type === 'planned'));
     setText(`cat-${cat}-actual`,  fmt(ca));
     setText(`cat-${cat}-planned`, cp > 0 ? '+ ' + fmt(cp) + ' planned' : '');
-    if (camp.budget == null) continue;  // no-budget pool: no progress bars
-    const caPct = Math.min(ca / camp.budget * 100, 100);
-    const cpPct = Math.min(cp / camp.budget * 100, 100 - caPct);
+    if (camp.budget == null) { carry = 0; continue; }  // no-budget pool: no progress bars
+
+    const effBudget = camp.rollover ? camp.budget + carry : camp.budget;
+    if (camp.rollover) {
+      setText(`cat-${cat}-budget`, 'of ' + fmt(effBudget) +
+        (carry > 0 ? ` (incl. ${fmt(carry)} rolled over)` : ''));
+      carry = Math.max(0, effBudget - ca);
+    } else {
+      carry = 0;
+    }
+
+    const caPct = Math.min(ca / effBudget * 100, 100);
+    const cpPct = Math.min(cp / effBudget * 100, 100 - caPct);
     setStyle(`cat-${cat}-actual-bar`,  'width', caPct + '%');
     setStyle(`cat-${cat}-planned-bar`, 'width', cpPct + '%');
   }
@@ -733,6 +756,51 @@ function bindAll() {
     closeModal();
     await load();
   });
+  document.getElementById('dup-merge').addEventListener('click', async () => {
+    if (!dupContext) return;
+    const { mode, payload, isEdit, editId: eid, dupRow } = dupContext;
+
+    if (looksLikeContractOnly(dupRow)) {
+      // Direction A: the OLD row already in the tracker is the contract
+      // placeholder, and THIS new one is the real invoice — keep the
+      // invoice, carry the placeholder's link forward onto it, drop the
+      // placeholder. The whole point of Merge: don't lose that link the
+      // way plain Replace would (Lauren, 2026-11-10).
+      if (!payload.contract_link) {
+        payload.contract_link = dupRow.contract_link || dupRow.notes || null;
+      }
+      await remove(dupRow.id);
+      if (mode === 'pre') {
+        dupResolvedId = eid;
+        dupResolvedHandle = (payload.creator_handle || '').toLowerCase();
+        closeDupModal();
+        await load();   // refresh so the just-removed placeholder drops out of `rows`
+        openEditModal(payload);
+        return;
+      }
+      const ok = await performSave(payload, isEdit, eid);
+      closeDupModal();
+      if (!ok) { alert('Error saving — please try again.'); return; }
+      closeModal();
+      await load();
+      return;
+    }
+
+    // Direction B (the more common order, per Lauren's 2026-11-10 follow-up):
+    // the OLD row already in the tracker IS the real invoice, and THIS new
+    // one being assigned is just the DocuSign contract placeholder arriving
+    // after it — fold its link onto the existing invoice instead of ever
+    // creating a second, redundant row, and discard the placeholder outright
+    // (it never gets saved as its own entry, and the edit form never opens
+    // for it).
+    const link = payload.contract_link || payload.notes || null;
+    const ok = await update(dupRow.id, { contract_link: link });
+    if (isEdit && eid) await remove(eid);   // drop the now-redundant pending placeholder row
+    closeDupModal();
+    if (!ok) { alert('Error saving — please try again.'); return; }
+    closeModal();
+    await load();
+  });
   document.getElementById('dup-replace').addEventListener('click', async () => {
     if (!dupContext) return;
     const { mode, payload, isEdit, editId: eid, dupRow } = dupContext;
@@ -958,12 +1026,30 @@ function dupCard(label, entry) {
     </div>`;
 }
 
+function looksLikeContractOnly(entry) {
+  return !entry.invoice_number && !entry.due_date && !(+entry.amount > 0)
+    && (entry.notes || '').includes('docusign.com');
+}
+function looksLikeRealInvoice(entry) {
+  return !!entry.invoice_number || !!entry.due_date || +entry.amount > 0;
+}
+
 function openDupModal(dupRow, payload, isEdit, editId, opts) {
   const mode = opts?.mode || 'post';   // 'pre' = Assign+add click, before the edit form opens; 'post' = Save Changes
   dupContext = { mode, dupRow, payload, isEdit, editId };
   document.getElementById('dup-handle').textContent = `@${payload.creator_handle}`;
   document.getElementById('dup-compare').innerHTML =
     dupCard('Already in tracker', dupRow) + dupCard('This new one', payload);
+  // Merge only makes sense for the specific contract-placeholder + real-invoice
+  // pairing (Lauren, 2026-11-10) — hidden for every other duplicate pair, where
+  // Keep Both / Replace are still the right two options. Works in BOTH
+  // directions: the invoice can already be in the tracker with a DocuSign
+  // contract showing up after (the more common order — Lauren, 2026-11-10
+  // follow-up), or the contract placeholder can already be sitting there
+  // when the real invoice comes in later.
+  const offerMerge = (looksLikeContractOnly(dupRow) && looksLikeRealInvoice(payload))
+                   || (looksLikeRealInvoice(dupRow) && looksLikeContractOnly(payload));
+  document.getElementById('dup-merge').classList.toggle('hidden', !offerMerge);
   document.getElementById('dup-overlay').classList.remove('hidden');
 }
 function closeDupModal() {
